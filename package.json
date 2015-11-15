@@ -1,0 +1,28 @@
+{
+    "name":                 "wildmap",
+    "description":          "A path based map with wildcard matching.",
+    "author":               "Alan Gutierrez <alan@prettyrobots.com>",
+    "version":              "9.9.9",
+    "keywords":
+    [
+                            "map", "path", "wildcard"
+    ],
+    "license":              "MIT",
+    "homepage":             "https://github.com/bigeasy/wildmap",
+    "repository":
+    {
+                            "url": "git://github.com/bigeasy/wildmap.git",
+                            "type": "git"
+    },
+    "main":                 "wildmap.js",
+    "dependencies":
+    {},
+    "devDependencies":
+    {
+                            "proof": "0.0.56"
+    },
+    "scripts":
+    {
+                            "test": "proof platform win32 && proof */*/*.t.js || t/test"
+    }
+}
