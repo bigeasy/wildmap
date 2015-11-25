@@ -67,7 +67,3 @@ Get a collection of all the values along the given path.
 #### `map.remove(path, value)`
 
 Remove the value if it is contained by the set at the given path.
-
-#### `map.remove(path)`
-
-Remove all the values at the given path.
