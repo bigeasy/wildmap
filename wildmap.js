@@ -32,7 +32,6 @@ WildMap.prototype.remove = function (path, value) {
         node = node[path[i]]
     }
 
-
     var values = node['.values'], index = values.indexOf(value)
     if (index != -1) {
         values.splice(index, 1)
