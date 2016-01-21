@@ -2,7 +2,7 @@
     "name":                 "wildmap",
     "description":          "A path based map with wildcard matching.",
     "author":               "Alan Gutierrez <alan@prettyrobots.com>",
-    "version":              "0.0.2",
+    "version":              "1.0.0",
     "keywords":
     [
                             "map", "path", "wildcard"
