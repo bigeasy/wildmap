@@ -1,7 +1,7 @@
 require('proof')(10, prove)
 
 function prove (assert) {
-    var WildMap = require('../..')
+    var WildMap = require('..')
 
     var map = new WildMap
 
