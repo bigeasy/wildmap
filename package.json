@@ -11,7 +11,7 @@
     "homepage":             "https://github.com/bigeasy/wildmap",
     "repository":
     {
-                            "url": "git://github.com/bigeasy/wildmap.git",
+                            "url": "bigeasy/wildmap",
                             "type": "git"
     },
     "main":                 "wildmap.js",
