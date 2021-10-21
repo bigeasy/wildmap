@@ -1,6 +1,6 @@
 {
     "name":                 "wildmap",
-    "description":          "A path based map with wildcard matching.",
+    "description":          "A map keyed by path with wildcard matching.",
     "author":               "Alan Gutierrez <alan@prettyrobots.com>",
     "version":              "1.0.3",
     "keywords":

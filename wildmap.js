@@ -1,88 +1,174 @@
-function WildMap () {
-    this._root = {}
-    this._root[''] = this._root
-}
+// **TODO** You do not have to prime the root.
+class WildMap {
+    static SINGLE = Symbol('SINGLE')
 
-WildMap.prototype.add = function (path, value) {
-    var node = this._root
+    static RECURSIVE = Symbol('RECURSIVE')
 
-    for (var i = 0, I = path.length; i < I; i++) {
-        if (!node[path[i]]) {
-            node[path[i]] = {}
-        }
-        node = node[path[i]]
+    constructor ({ single, recursive }) {
+        this.single = single || WildMap.SINGLE
+        this.recursive = recursive || WildMap.RECURSIVE
+        this._root = { children: {}, values: [] }
+        this._root.children[''] = { children: {}, values: [], part: '', parent: null, has: false }
     }
 
-    var values = node['.values']
-    if (values == null) {
-        values =  node['.values'] = []
-    }
+    set (path, value) {
+        let node = this._root
 
-    values.push(value)
-}
-
-WildMap.prototype.remove = function (path, value) {
-    var node = this._root, parent
-
-    for (var i = 0, I = path.length; i < I; i++) {
-        if (!node[path[i]]) {
-            return
-        }
-        parent = node
-        node = node[path[i]]
-    }
-
-    var values = node['.values'], index = values.indexOf(value)
-    if (index != -1) {
-        values.splice(index, 1)
-    }
-
-    if (values.length == 0) {
-        delete node['.values']
-        if (I > 1 && Object.keys(node).length == 0) {
-            delete parent[path[I - 1]]
-        }
-    }
-}
-
-WildMap.prototype.get = function (path) {
-    var node = this._root, i = 0, values
-    for (var i = 0, I = path.length; i < I; i++) {
-        node = node[path[i]]
-        if (node == null) {
-            return []
-        }
-    }
-    return node['.values'] || []
-}
-
-WildMap.prototype.match = function (path) {
-    var parents = [ this._root ], i = 0, array = [],
-        parent, children, node, values, j, J, k, K
-    while (i < path.length && parents.length != 0) {
-        children = []
-        while (parents.length) {
-            parent = parents.shift()
-            node = parent[path[i]]
-            if (node != null) {
-                children.push(node)
+        for (let i = 0, I = path.length; i < I; i++) {
+            if (! node.children[path[i]]) {
+                node.children[path[i]] = { children: {}, values: [], parent: node, part: path[i], has: false }
             }
-            node = parent['*']
-            if (node != null) {
-                children.push(node)
+            node = node.children[path[i]]
+        }
+
+        node.values[0] = value
+        node.has = true
+    }
+
+    get (path) {
+        let node = this._root
+        for (let i = 0, I = path.length; i < I; i++) {
+            node = node.children[path[i]]
+            if (node == null) {
+                return [][0]
             }
         }
-        for (j = 0, J = children.length; j < J; j++) {
-            if ((values = children[j]['.values']) != null) {
-                for (k = 0, K = values.length; k < K; k++) {
-                    array.push(values[k])
+        if (node.has) {
+            return node.values[0]
+        }
+    }
+
+    has (path) {
+        let node = this._root
+        for (let i = 0, I = path.length; i < I; i++) {
+            node = node.children[path[i]]
+            if (node == null) {
+                return false
+            }
+        }
+        return node.has
+    }
+
+    exists (path) {
+        let node = this._root
+        for (let i = 0, I = path.length; i < I; i++) {
+            node = node.children[path[i]]
+            if (node == null) {
+                return false
+            }
+        }
+        return true
+    }
+
+    list (path) {
+        let node = this._root
+        for (let i = 0, I = path.length; i < I; i++) {
+            node = node.children[path[i]]
+            if (node == null) {
+                return null
+            }
+        }
+        return Object.keys(node.children)
+    }
+
+    glob (path) {
+        path = path.map((part, index) => {
+            return index < path.length && part === this.recursive && path[index + 1] === this.recursive ? this.single : part
+        })
+        const candidates = [{ node: this._root, path: path }]
+        const globbed = []
+        while (candidates.length != 0) {
+            const candidate = candidates.shift()
+            if (candidate.path[0] == this.single) {
+                for (const part in candidate.node.children) {
+                    const remainder = candidate.path.slice(1)
+                    const node = candidate.node.children[part]
+                    if (remainder.length == 0) {
+                        if (Object.keys(node.children).length == 0) {
+                            globbed.push(node)
+                        }
+                    } else {
+                        candidates.push({ node: node, path: candidate.path.slice(1) })
+                    }
+                }
+            } else if (candidate.path[0] == this.recursive) {
+                for (const part in candidate.node.children) {
+                    const node = candidate.node.children[part]
+                    if (candidate.path.length == 1) {
+                        globbed.push(node)
+                    } else {
+                        candidates.push({ node: node, path: candidate.path.slice(1) })
+                    }
+                    candidates.push({ node: node, path: candidate.path })
+                }
+            } else {
+                const node = candidate.node.children[candidate.path[0]]
+                if (node != null) {
+                    const remainder = candidate.path.slice(1)
+                    if (remainder.length == 0) {
+                        if (Object.keys(node.children).length == 0) {
+                            globbed.push(node)
+                        }
+                    } else {
+                        candidates.push({ node: node, path: candidate.path.slice(1) })
+                    }
                 }
             }
         }
-        parents = children
-        i++
+        return globbed.map(found => {
+            let iterator = found
+            const path = []
+            do {
+                path.push(iterator.part)
+                iterator = iterator.parent
+            } while (iterator != null)
+            return path.reverse()
+        })
     }
-    return array
+
+    unset (path) {
+        let node = this._root
+        const nodes = []
+        for (let i = 0, I = path.length; i < I; i++) {
+            node = node.children[path[i]]
+            if (node == null) {
+                return false
+            }
+            nodes.push(node)
+        }
+        delete node.value
+        node.has = false
+        nodes.reverse()
+        path = path.slice().reverse()
+        while (path.length != 1 && Object.keys(nodes[0].children).length == 0 && ! nodes[0].has) {
+            const node = nodes.shift()
+            const part = path.shift()
+            delete nodes[0].children[part]
+        }
+        return true
+    }
+
+    remove (path) {
+        let node = this._root
+        const parents = []
+        for (let i = 0, I = path.length; i < I; i++) {
+            parents.push(node)
+            node = node.children[path[i]]
+            if (node == null) {
+                return false
+            }
+        }
+        parents.reverse()
+        path = path.slice().reverse()
+        let parent
+        do {
+            parent = parents.shift()
+            const part = path.shift()
+            delete parent.children[part]
+            console.log('remove', part)
+        } while (path.length != 1 && Object.keys(parent.children).length == 0 && ! parent.has)
+        return true
+    }
 }
 
 module.exports = WildMap
