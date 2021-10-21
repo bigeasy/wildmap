@@ -48,8 +48,13 @@ node test/readme.t.js
 
 ## Overview
 
+**TODO** Rough draft. Baby English.
+
+WildMap is a map keyed on an array that acts as a path.
+
 ```javascript
 {
+    const WildMap = require('wildmap')
     okay("TODO")
 }
 ```

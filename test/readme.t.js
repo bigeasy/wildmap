@@ -25,8 +25,13 @@
 
 require('proof')(1, okay => {
     // ## Overview
+    //
+    // **TODO** Rough draft. Baby English.
+    //
+    // WildMap is a map keyed on an array that acts as a path.
 
     {
+        const WildMap = require('..')
         okay("TODO")
     }
 })
