@@ -19,10 +19,10 @@
     {},
     "devDependencies":
     {
-                            "proof": "3.0.x"
+                            "proof": "^9.0.3"
     },
     "scripts":
     {
-                            "test": "proof platform win32 && proof */*/*.t.js || t/test"
+                            "test": "proof t/*.t.js"
     }
 }
