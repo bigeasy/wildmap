@@ -165,7 +165,6 @@ class WildMap {
             parent = parents.shift()
             const part = path.shift()
             delete parent.children[part]
-            console.log('remove', part)
         } while (path.length != 1 && Object.keys(parent.children).length == 0 && ! parent.has)
         return true
     }
