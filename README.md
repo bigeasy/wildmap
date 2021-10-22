@@ -144,7 +144,7 @@ wildmap.set('/hello/earth/beings'.split('/'), 'b')
 We use the `glob` method to perform globbing.
 
 ```javascript
-okay(wildmap.glob('/hello/*'.split('/')), [[ '', 'hello', 'world' ]], 'glob single wildcard')
+okay(wildmap.glob('/hello/*'.split('/')), [[ '', 'hello', 'world' ], [ '', 'hello', 'earth' ]], 'glob single wildcard')
 ```
 
 Globbed recursive.

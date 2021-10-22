@@ -84,9 +84,7 @@ class WildMap {
                     const remainder = candidate.path.slice(1)
                     const node = candidate.node.children[part]
                     if (remainder.length == 0) {
-                        if (Object.keys(node.children).length == 0) {
-                            globbed.push(node)
-                        }
+                        globbed.push(node)
                     } else {
                         candidates.push({ node: node, path: candidate.path.slice(1) })
                     }
@@ -106,9 +104,7 @@ class WildMap {
                 if (node != null) {
                     const remainder = candidate.path.slice(1)
                     if (remainder.length == 0) {
-                        if (Object.keys(node.children).length == 0) {
-                            globbed.push(node)
-                        }
+                        globbed.push(node)
                     } else {
                         candidates.push({ node: node, path: candidate.path.slice(1) })
                     }

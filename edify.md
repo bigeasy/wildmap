@@ -165,7 +165,7 @@ We use the `glob` method to perform globbing.
 
 ```javascript
 //{ "name": "test" }
-okay(wildmap.glob('/hello/*'.split('/')), [[ '', 'hello', 'world' ]], 'glob single wildcard')
+okay(wildmap.glob('/hello/*'.split('/')), [[ '', 'hello', 'world' ], [ '', 'hello', 'earth' ]], 'glob single wildcard')
 ```
 
 Globbed recursive.
