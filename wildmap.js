@@ -4,9 +4,9 @@ class WildMap {
 
     static RECURSIVE = Symbol('RECURSIVE')
 
-    constructor ({ single, recursive }) {
-        this.single = single || WildMap.SINGLE
-        this.recursive = recursive || WildMap.RECURSIVE
+    constructor ({ single = WildMap.SINGLE, recursive = WildMap.RECURSIVE } = {}) {
+        this.single = single
+        this.recursive = recursive
         this._root = { children: {}, values: [] }
         this._root.children[''] = { children: {}, values: [], part: '', parent: null, has: false }
     }

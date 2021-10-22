@@ -263,8 +263,23 @@ okay(! wildmap.has('/hello/dolly/oh/hello/dolly'.split('/')), 'child does not ha
 okay(! wildmap.exists('/hello/dolly/oh/hello/dolly'.split('/')), 'child does not exist')
 ```
 
+Sigils are specified by the constructor and can be anything you like. We use `*`
+and `**` here because they are familiar. Instead of strings you can use symbols
+if there are no globbing characters that make sense for your application.
+
+If do not specify any sigils WildMap will use the default sigil symbols
+`WildMap.SINGLE` and `WildMap.RECURSIVE`.
+
 ```javascript
-const wildmap = new WildMap({ single: '*', recursive: '**' })
+const wildmap = new WildMap
+
+okay(wildmap.single, WildMap.SINGLE, 'signal symbol')
+okay(wildmap.recursive, WildMap.RECURSIVE, 'recursive symbol')
+
+wildmap.set('/hello/world'.split('/'), 'a')
+
+okay(wildmap.glob([ '', 'hello', WildMap.SINGLE ]), [[ '', 'hello', 'world' ]], 'search with single symbol')
+okay(wildmap.glob([ '', WildMap.RECURSIVE ]), [[ '', 'hello' ], [ '', 'hello', 'world' ]], 'search with recursive symbol')
 ```
 
 ```javascript

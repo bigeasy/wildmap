@@ -23,7 +23,7 @@
 // Proof `okay` function to assert out statements in the readme. A Proof unit test
 // generally looks like this.
 
-require('proof')(40, okay => {
+require('proof')(44, okay => {
     // ## Overview
     //
     // **TODO** Rough draft. Baby English.
@@ -140,8 +140,6 @@ require('proof')(40, okay => {
     // `etcd`-alike called [Addendum](https://github.com/bigeasy/addendum).
 
     {
-        const wildmap = new WildMap({ single: '*', recursive: '**' })
-
         function write (path, data) {
             const key = path.split('/')
             mkdirp(key.slice(0, 1).join('/'))
@@ -260,6 +258,25 @@ require('proof')(40, okay => {
     okay(! wildmap.exists('/hello/dolly/oh/hello'.split('/')), 'target does not exist')
     okay(! wildmap.has('/hello/dolly/oh/hello/dolly'.split('/')), 'child does not have value')
     okay(! wildmap.exists('/hello/dolly/oh/hello/dolly'.split('/')), 'child does not exist')
+
+    // Sigils are specified by the constructor and can be anything you like. We use `*`
+    // and `**` here because they are familiar. Instead of strings you can use symbols
+    // if there are no globbing characters that make sense for your application.
+    //
+    // If do not specify any sigils WildMap will use the default sigil symbols
+    // `WildMap.SINGLE` and `WildMap.RECURSIVE`.
+
+    {
+        const wildmap = new WildMap
+
+        okay(wildmap.single, WildMap.SINGLE, 'signal symbol')
+        okay(wildmap.recursive, WildMap.RECURSIVE, 'recursive symbol')
+
+        wildmap.set('/hello/world'.split('/'), 'a')
+
+        okay(wildmap.glob([ '', 'hello', WildMap.SINGLE ]), [[ '', 'hello', 'world' ]], 'search with single symbol')
+        okay(wildmap.glob([ '', WildMap.RECURSIVE ]), [[ '', 'hello' ], [ '', 'hello', 'world' ]], 'search with recursive symbol')
+    }
 })
 
 // You can run this unit test yourself to see the output from the various
